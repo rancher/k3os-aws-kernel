@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+
+source $(dirname $0)/version
+cd $(dirname $0)/..
+
+#
+# Currently only package the generic artifacts
+#
+
+GENERIC_HEADERS_DIR=dist/generic/headers
+GENERIC_MAIN_DIR=dist/generic/main
+GENERIC_EXTRA_DIR=dist/generic/modules-extra
+
+mkdir -p ${GENERIC_HEADERS_DIR} ${GENERIC_MAIN_DIR} ${GENERIC_EXTRA_DIR}
+
+KERNEL_BASE_DIR=build/kernel/debian
+
+# headers
+cp -rf ${KERNEL_BASE_DIR}/linux-headers-*-generic/usr ${GENERIC_HEADERS_DIR}
+cp -rf ${KERNEL_BASE_DIR}/linux-headers-*-generic/lib ${GENERIC_HEADERS_DIR}
+
+# main modules and vmlinuz
+IMAGE_GENERIC_DIR=${KERNEL_BASE_DIR}/linux-image-unsigned-*-generic
+if [ ! -d ${IMAGE_GENERIC_DIR} ]; then
+    IMAGE_GENERIC_DIR=${KERNEL_BASE_DIR}/linux-image-*-generic
+fi
+cp -rf ${IMAGE_GENERIC_DIR}/boot ${GENERIC_MAIN_DIR}
+cp -rf ${KERNEL_BASE_DIR}/linux-modules-*-generic/boot ${GENERIC_MAIN_DIR}
+cp -rf ${KERNEL_BASE_DIR}/linux-modules-*-generic/lib ${GENERIC_MAIN_DIR}
+
+# extra modules
+cp -rf ${KERNEL_BASE_DIR}/linux-modules-extra-*-generic/lib ${GENERIC_EXTRA_DIR}
+
+# package artifacts
+mkdir -p dist/artifacts
+
+pushd ${GENERIC_HEADERS_DIR}
+tar cvJf ../../artifacts/kernel-headers-generic_${ARCH}.tar.xz .
+popd
+
+pushd ${GENERIC_MAIN_DIR}
+tar cvJf ../../artifacts/kernel-generic_${ARCH}.tar.xz .
+popd
+
+pushd ${GENERIC_EXTRA_DIR}
+tar cvJf ../../artifacts/kernel-extra-generic_${ARCH}.tar.xz .
+popd
