@@ -42,7 +42,7 @@ ARG KERNEL_ORIG_URL=http://archive.ubuntu.com/ubuntu/pool/main/l/linux-aws/linux
 
 ARG KERNEL_DIFF_URL=http://archive.ubuntu.com/ubuntu/pool/main/l/linux-aws/linux-aws_4.15.0-1038.40.diff.gz
 
-ENV KERNEL_SOURCE_URL=${KERNEL_SOURCE_URL} \
+ENV KERNEL_ORIG_URL=${KERNEL_ORIG_URL} \
     KERNEL_DIFF_URL=${KERNEL_DIFF_URL} \
     DOWNLOADS=/usr/src/downloads
 

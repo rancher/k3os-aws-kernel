@@ -12,6 +12,7 @@ mkdir -p ${KERNEL_DIR}/debian/stamps
 
 # kernel
 pushd ${KERNEL_DIR}
+chmod +x debian/rules
 fakeroot debian/rules clean
 fakeroot debian/rules binary-headers binary-aws do_zfs=false do_dkms_nvidia=false
 popd

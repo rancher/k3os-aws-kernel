@@ -4,6 +4,7 @@ set -e
 source $(dirname $0)/version
 cd $(dirname $0)/..
 
+mkdir -p ${DOWNLOADS}
 curl -fL -o ${DOWNLOADS}/orig.tar.gz ${KERNEL_ORIG_URL}
 curl -fL -o ${DOWNLOADS}/diff.gz ${KERNEL_DIFF_URL}
 
@@ -14,14 +15,12 @@ tar xf orig.tar.gz
 gunzip diff.gz
 popd
 
-pushd build/kernel
 mv ${DOWNLOADS}/linux-*/* build/kernel
-patch -p1 -i ${DOWNLOADS}/*.diff
-popd
 
-# custom patches
 PATCHES_DIR=$(pwd)/patches
 pushd build/kernel
+patch -p1 -i ${DOWNLOADS}/diff
+# custom patches
 for p in `find ${PATCHES_DIR} -name "*.patch"`; do
     echo "patching $p"
     patch -p1 -i $p
